@@ -103,7 +103,7 @@ jobs:
           v=${GITHUB_REF_NAME#v}
           awk -v v="$v" '/^## \[/ { if (on) exit; if (index($0, "[" v "]")) { on = 1; next } } on' CHANGELOG.md > notes.md
           printf '\n---\nPick your file in the [download table](https://github.com/%s#download). Checksums: `SHA256SUMS`.\n' "$GITHUB_REPOSITORY" >> notes.md
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           body_path: notes.md
           files: upload/*
