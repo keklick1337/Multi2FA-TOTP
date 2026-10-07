@@ -1,0 +1,56 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please never paste real secrets, otpauth links or vault files.
+        Security problems: see SECURITY.md instead of opening an issue.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "`multi2fa -version`, `multi2fa-cli version` or Settings → About"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux
+        - Windows
+        - macOS
+        - Android
+        - iOS
+        - Command line (multi2fa-cli)
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: System details
+      description: Distribution and version, desktop environment, X11 or Wayland, package type (deb, rpm, tarball, ...)
+      placeholder: "Fedora 44, GNOME on Wayland, rpm"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output or screenshots
+      description: Terminal output (start the app from a terminal) or screenshots, with secrets removed.

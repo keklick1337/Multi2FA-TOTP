@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-multi2fa-vault">
+    <comment>Multi2FA TOTP vault</comment>
+    <comment xml:lang="ru">Хранилище Multi2FA TOTP</comment>
+    <icon name="multi2fa"/>
+    <magic priority="60">
+      <match type="string" value="M2FA" offset="0"/>
+    </magic>
+    <glob pattern="*.m2fa"/>
+  </mime-type>
+  <mime-type type="application/x-multi2fa-backup">
+    <comment>Multi2FA TOTP backup</comment>
+    <comment xml:lang="ru">Резервная копия Multi2FA TOTP</comment>
+    <icon name="multi2fa"/>
+    <glob pattern="*.m2fab"/>
+  </mime-type>
+</mime-info>

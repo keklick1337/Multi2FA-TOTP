@@ -1,0 +1,54 @@
+# Vet, tests and builds on every push and pull request.
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+      - name: Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev wayland-protocols
+      - name: Format
+        if: runner.os == 'Linux'
+        run: test -z "$(gofmt -l .)" || (gofmt -l .; exit 1)
+      - name: Vet
+        run: go vet ./...
+      - name: Test
+        run: go test ./...
+      - name: Build app and CLI
+        run: |
+          go build -o build/ ./cmd/multi2fa
+          go build -o build/ ./cmd/multi2fa-cli
+
+  cli-cross:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+      - name: Cross compile the CLI
+        run: |
+          for t in linux/arm64 linux/arm linux/riscv64 windows/arm64 darwin/arm64 freebsd/amd64 openbsd/amd64; do
+            echo "== $t"
+            CGO_ENABLED=0 GOOS=${t%/*} GOARCH=${t#*/} go build -o /dev/null ./cmd/multi2fa-cli
+          done

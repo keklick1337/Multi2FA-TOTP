@@ -1,0 +1,54 @@
+# nfpm config for the multi2fa-cli packages (deb, rpm, archlinux), used by
+# packaging/docker/build-cli.sh. The binary is static, so one package per CPU fits every
+# release of a distribution. The script replaces ${PKG_ARCH} (nfpm/GOARCH naming), ${VERSION} and ${BIN}.
+name: multi2fa-cli
+arch: ${PKG_ARCH}
+platform: linux
+version: ${VERSION}
+release: 1
+section: utils
+priority: optional
+maintainer: keklick1337 <keklick1337@gmail.com>
+vendor: keklick1337
+homepage: https://github.com/keklick1337/Multi2FA-TOTP
+license: MIT
+description: |-
+  Command line TOTP/HOTP authenticator for Multi2FA vaults.
+  Lists accounts, prints codes, adds, removes, exports and backs up accounts in the
+  encrypted vaults of Multi2FA TOTP (Argon2id/scrypt/PBKDF2 with XChaCha20-Poly1305
+  or AES-256-GCM). Single static binary.
+# The desktop package multi2fa-totp already ships /usr/bin/multi2fa-cli.
+conflicts:
+  - multi2fa-totp
+suggests:
+  - wl-clipboard
+  - xclip
+contents:
+  - src: ${BIN}
+    dst: /usr/bin/multi2fa-cli
+    file_info:
+      mode: 0755
+  - src: docs/cli.md
+    dst: /usr/share/doc/multi2fa-cli/README.md
+    file_info:
+      mode: 0644
+  - src: LICENSE
+    dst: /usr/share/doc/multi2fa-cli/copyright
+    packager: deb
+    file_info:
+      mode: 0644
+  - src: LICENSE
+    dst: /usr/share/licenses/multi2fa-cli/LICENSE
+    packager: rpm
+    file_info:
+      mode: 0644
+  - src: LICENSE
+    dst: /usr/share/licenses/multi2fa-cli/LICENSE
+    packager: archlinux
+    file_info:
+      mode: 0644
+rpm:
+  group: Applications/System
+  compression: xz
+deb:
+  compression: xz

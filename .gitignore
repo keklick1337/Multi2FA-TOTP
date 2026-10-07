@@ -1,0 +1,8 @@
+/build/
+/cmd/multi2fa/rsrc_windows_*.syso
+*.m2fa
+*.m2fab
+*.m2fa.bak
+/fyne-cross/
+/keystore/
+/macos-sdk/

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.keklick1337.multi2fa</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Multi2FA TOTP</name>
+  <summary>Encrypted TOTP/HOTP two-factor authenticator</summary>
+  <description>
+    <p>
+      Offline authenticator for two-factor codes. Accounts are kept in password protected vaults
+      encrypted with Argon2id and XChaCha20-Poly1305 that never leave your device.
+    </p>
+    <ul>
+      <li>Add accounts from a camera, the screen, an image, the clipboard or by hand</li>
+      <li>Imports otpauth links and Google Authenticator exports</li>
+      <li>Several vaults at once, nested folders, drag and drop and instant search</li>
+      <li>Auto-lock, clipboard clearing and encrypted backups</li>
+      <li>Selectable key derivation and encryption, secrets stay encrypted in memory</li>
+      <li>Color themes with dark and light variants, 6 languages</li>
+      <li>Includes multi2fa-cli to read codes and manage vaults from a terminal</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">io.github.keklick1337.multi2fa.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Accounts with folders and live codes</caption>
+      <image>https://raw.githubusercontent.com/keklick1337/Multi2FA-TOTP/main/docs/screenshots/hero.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Unlocking a vault</caption>
+      <image>https://raw.githubusercontent.com/keklick1337/Multi2FA-TOTP/main/docs/screenshots/unlock.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Color themes</caption>
+      <image>https://raw.githubusercontent.com/keklick1337/Multi2FA-TOTP/main/docs/screenshots/themes.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="bugtracker">https://github.com/keklick1337/Multi2FA-TOTP/issues</url>
+  <url type="vcs-browser">https://github.com/keklick1337/Multi2FA-TOTP</url>
+  <url type="homepage">https://github.com/keklick1337/Multi2FA-TOTP</url>
+  <developer id="io.github.keklick1337">
+    <name>keklick1337</name>
+  </developer>
+  <categories>
+    <category>Utility</category>
+    <category>Security</category>
+  </categories>
+  <keywords>
+    <keyword>2FA</keyword>
+    <keyword>TOTP</keyword>
+    <keyword>OTP</keyword>
+    <keyword>authenticator</keyword>
+  </keywords>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="1.0.0" date="2026-10-07">
+      <description>
+        <p>First release.</p>
+      </description>
+    </release>
+  </releases>
+</component>

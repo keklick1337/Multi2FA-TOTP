@@ -1,0 +1,109 @@
+# Builds every package. On a push to main (or a manual run) the files are kept as workflow
+# artifacts, downloadable from the run page; on a v* tag they are also published as a GitHub release.
+name: release
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  workflow_dispatch:
+
+# A newer push to the same branch cancels the build that is still running.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+      - name: Test
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev wayland-protocols
+          go vet ./...
+          go test ./...
+      # Linux (amd64/arm64/armhf, cross compiled), Windows and every CLI archive and package, flat in build/release/.
+      - name: Packages (Docker)
+        run: make -j4 -O release-portable release-deb release-rpm release-windows release-cli
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-windows-cli
+          path: build/release/
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Repository secrets: ANDROID_KEYSTORE_B64 (base64 of the release keystore), ANDROID_KEYSTORE_PASS,
+      # ANDROID_KEY_PASS (optional) and ANDROID_KEY_ALIAS (optional). Without them a development-signed build is made.
+      - name: AAB and APKs (Docker)
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          K_PASS: ${{ secrets.ANDROID_KEY_PASS }}
+          K_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            mkdir -p keystore
+            echo "$KS_B64" | base64 -d > keystore/multi2fa-release.keystore
+            make android-release ANDROID_OUT=build/android BUILD=${{ github.run_number }} \
+              KEYSTORE_PASS="$KS_PASS" KEY_PASS="${K_PASS:-$KS_PASS}" KEY_ALIAS="${K_ALIAS:-multi2fa}"
+            rm -f keystore/multi2fa-release.keystore
+          else
+            make android BUILD=${{ github.run_number }}
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            build/android/*.apk
+            build/android/*.aab
+
+  macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+      - name: Universal app bundle
+        run: make darwin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: |
+            build/darwin/*.zip
+            build/darwin/*.dmg
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [linux, android, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Collect files and checksums
+        run: |
+          mkdir upload
+          find dist -type f ! -name SHA256SUMS -exec cp {} upload/ \;
+          (cd upload && sha256sum * > SHA256SUMS)
+          ls -la upload
+      - name: Release notes from CHANGELOG.md
+        run: |
+          v=${GITHUB_REF_NAME#v}
+          awk -v v="$v" '/^## \[/ { if (on) exit; if (index($0, "[" v "]")) { on = 1; next } } on' CHANGELOG.md > notes.md
+          printf '\n---\nPick your file in the [download table](https://github.com/%s#download). Checksums: `SHA256SUMS`.\n' "$GITHUB_REPOSITORY" >> notes.md
+      - uses: softprops/action-gh-release@v2
+        with:
+          body_path: notes.md
+          files: upload/*

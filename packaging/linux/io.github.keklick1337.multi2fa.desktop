@@ -1,0 +1,20 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Multi2FA TOTP
+GenericName=Authenticator
+GenericName[ru]=Аутентификатор
+Comment=Encrypted TOTP/HOTP two-factor authenticator
+Comment[ru]=Зашифрованный аутентификатор TOTP/HOTP
+Comment[uk]=Зашифрований автентифікатор TOTP/HOTP
+Comment[de]=Verschlüsselter TOTP/HOTP Authenticator
+Comment[es]=Autenticador TOTP/HOTP cifrado
+Comment[fr]=Authentificateur TOTP/HOTP chiffré
+Exec=sh -c "exec \\"\\$(dirname \\"\\$0\\")/multi2fa\\" \\"\\$@\\"" %k %f
+Icon=multi2fa
+Terminal=false
+Categories=Utility;Security;
+Keywords=2fa;totp;hotp;otp;authenticator;mfa;
+StartupNotify=true
+MimeType=application/x-multi2fa-vault;application/x-multi2fa-backup;
+StartupWMClass=multi2fa
