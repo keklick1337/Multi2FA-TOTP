@@ -364,7 +364,8 @@ GitHub Actions does everything on GitHub's machines, free of charge for public r
 | `release.yml` | every push to `main` | the full build (Linux, Windows, macOS, Android, CLI); files under **Artifacts** on the run page |
 | `release.yml` | a `v*` tag | the same, published as a GitHub release with `SHA256SUMS` and notes from `CHANGELOG.md` |
 
-Dependabot (`.github/dependabot.yml`) opens pull requests for Go module and action updates.
+Dependabot (`.github/dependabot.yml`) checks once a month and opens at most one pull request for Go modules and one
+for GitHub Actions, each bundling all updates.
 
 ### Android and iOS
 

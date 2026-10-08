@@ -1,9 +1,11 @@
+# One pull request per ecosystem and month: all Go modules together, all GitHub Actions together.
 version: 2
 updates:
   - package-ecosystem: gomod
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 1
     groups:
       go-deps:
         patterns: ["*"]
@@ -11,3 +13,7 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      actions:
+        patterns: ["*"]
